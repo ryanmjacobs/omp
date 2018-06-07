@@ -109,19 +109,19 @@ void OMP_Deblur(double* u, const double* f, int maxIterations, double dt, double
 {
     double epsilon = 1.0e-7;
     double sigma2 = SQR(sigma);
-    int x, y, z, iteration;
     int converged = 0;
     int lastConverged = 0;
     int fullyConverged = (xMax - 1) * (yMax - 1) * (zMax - 1);
     double* conv = OMP_conv;
     double* g = OMP_g;
 
-    for (iteration = 0; iteration < maxIterations && converged != fullyConverged; iteration++)
+    #pragma parallel private(converged)
+    for (int iteration = 0; iteration < maxIterations && converged != fullyConverged; iteration++)
     {
-        #pragma omp parallel for collapse(3)
-        for(x = 1; x < xMax - 1; x++) {
-            for(y = 1; y < yMax - 1; y++)
-                for(z = 1; z < zMax - 1; z++)
+        #pragma omp for collapse(3)
+        for(int x = 1; x < xMax - 1; x++) {
+            for(int y = 1; y < yMax - 1; y++)
+                for(int z = 1; z < zMax - 1; z++)
                     g[Index(x, y, z)] = 1.0 / sqrt(epsilon + 
                         SQR(u[Index(x, y, z)] - u[Index(x + 1, y, z)]) + 
                         SQR(u[Index(x, y, z)] - u[Index(x - 1, y, z)]) + 
@@ -134,10 +134,10 @@ void OMP_Deblur(double* u, const double* f, int maxIterations, double dt, double
         memcpy(conv, u, sizeof(double) * xMax * yMax * zMax);
         OMP_GaussianBlur(conv, Ksigma, 3);
 
-        #pragma omp parallel for collapse(3)
-        for(x = 0; x < xMax; x++) {
-            for(y = 0; y < yMax; y++) {
-                for(z = 0; z < zMax; z++) {
+        #pragma omp for collapse(3)
+        for(int x = 0; x < xMax; x++) {
+            for(int y = 0; y < yMax; y++) {
+                for(int z = 0; z < zMax; z++) {
                     double r = conv[Index(x, y, z)] * f[Index(x, y, z)] / sigma2;
                     r = (r * (2.38944 + r * (0.950037 + r))) / (4.65314 + r *
                          (2.57541 + r * (1.48937 + r)));
@@ -149,9 +149,9 @@ void OMP_Deblur(double* u, const double* f, int maxIterations, double dt, double
         OMP_GaussianBlur(conv, Ksigma, 3);
         converged = 0;
 
-        for(x = 1; x < xMax - 1; x++) {
-            for(y = 1; y < yMax - 1; y++) {
-                for(z = 1; z < zMax - 1; z++) {
+        for(int x = 1; x < xMax - 1; x++) {
+            for(int y = 1; y < yMax - 1; y++) {
+                for(int z = 1; z < zMax - 1; z++) {
                     double oldVal = u[Index(x, y, z)];
                     double newVal = (u[Index(x, y, z)] + dt * ( 
                         u[Index(x - 1, y, z)] * g[Index(x - 1, y, z)] + 
