@@ -86,23 +86,23 @@ void OMP_GaussianBlur(double *u, double Ksigma, int stepCount)
                 }
             }
 
-            for (x = 0; x < xMax; x++)
-                for (z = 0; z < zMax; z++)
+            for (x = 0; x < xMax; x++) {
+                for (z = 0; z < zMax; z++) {
                     u[Index(x, yMax - 1, z)] *= boundryScale;
 
-            for (x = 0; x < xMax; x++)
-                for (y = yMax - 2; y >= 0; y--)
-                    for (z = 0; z < zMax; z++)
+                    for (y = yMax - 2; y >= 0; y--)
                         u[Index(x, y, z)] += u[Index(x, y + 1, z)] * nu;
+                }
+            }
 
-            for (x = 0; x < xMax; x++)
-                for (y = 0; y < yMax; y++)
+            for (x = 0; x < xMax; x++) {
+                for (y = 0; y < yMax; y++) {
                     u[Index(x, y, 0)] *= boundryScale;
 
-            for (x = 0; x < xMax; x++)
-                for (y = 0; y < yMax; y++)
                     for (z = 1; z < zMax; z++)
                         u[Index(x, y, z)] = u[Index(x, y, z - 1)] * nu;
+                }
+            }
 
             for (x = 0; x < xMax; x++)
                 for (y = 0; y < yMax; y++)
