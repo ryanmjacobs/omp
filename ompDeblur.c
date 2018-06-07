@@ -134,12 +134,10 @@ void OMP_Deblur(double* u, const double* f, int maxIterations, double dt, double
 
 	for (iteration = 0; iteration < maxIterations && converged != fullyConverged; iteration++)
 	{
-		for(x = 1; x < xMax - 1; x++)
-		{
+        #pragma omp parallel for collapse(3)
+		for(x = 1; x < xMax - 1; x++) {
 			for(y = 1; y < yMax - 1; y++)
-			{
 				for(z = 1; z < zMax - 1; z++)
-				{
 					g[Index(x, y, z)] = 1.0 / sqrt(epsilon + 
 						SQR(u[Index(x, y, z)] - u[Index(x + 1, y, z)]) + 
 						SQR(u[Index(x, y, z)] - u[Index(x - 1, y, z)]) + 
@@ -147,31 +145,29 @@ void OMP_Deblur(double* u, const double* f, int maxIterations, double dt, double
 						SQR(u[Index(x, y, z)] - u[Index(x, y - 1, z)]) + 
 						SQR(u[Index(x, y, z)] - u[Index(x, y, z + 1)]) + 
 						SQR(u[Index(x, y, z)] - u[Index(x, y, z - 1)]));
-				}
-			}
-		}
+        }
+
 		memcpy(conv, u, sizeof(double) * xMax * yMax * zMax);
 		OMP_GaussianBlur(conv, Ksigma, 3);
-		for(x = 0; x < xMax; x++)
-		{
-			for(y = 0; y < yMax; y++)
-			{
-				for(z = 0; z < zMax; z++)
-				{
+
+        #pragma omp parallel for collapse(3)
+		for(x = 0; x < xMax; x++) {
+			for(y = 0; y < yMax; y++) {
+				for(z = 0; z < zMax; z++) {
 					double r = conv[Index(x, y, z)] * f[Index(x, y, z)] / sigma2;
-					r = (r * (2.38944 + r * (0.950037 + r))) / (4.65314 + r * (2.57541 + r * (1.48937 + r)));
+					r = (r * (2.38944 + r * (0.950037 + r))) / (4.65314 + r *
+                         (2.57541 + r * (1.48937 + r)));
 					conv[Index(x, y, z)] -= f[Index(x, y, z)] * r;
-				}
-			}
+                }
+            }
 		}
+
 		OMP_GaussianBlur(conv, Ksigma, 3);
 		converged = 0;
-		for(x = 1; x < xMax - 1; x++)
-		{
-			for(y = 1; y < yMax - 1; y++)
-			{
-				for(z = 1; z < zMax - 1; z++)
-				{
+
+		for(x = 1; x < xMax - 1; x++) {
+			for(y = 1; y < yMax - 1; y++) {
+				for(z = 1; z < zMax - 1; z++) {
 					double oldVal = u[Index(x, y, z)];
 					double newVal = (u[Index(x, y, z)] + dt * ( 
 						u[Index(x - 1, y, z)] * g[Index(x - 1, y, z)] + 
@@ -179,21 +175,26 @@ void OMP_Deblur(double* u, const double* f, int maxIterations, double dt, double
 						u[Index(x, y - 1, z)] * g[Index(x, y - 1, z)] + 
 						u[Index(x, y + 1, z)] * g[Index(x, y + 1, z)] + 
 						u[Index(x, y, z - 1)] * g[Index(x, y, z - 1)] + 
-						u[Index(x, y, z + 1)] * g[Index(x, y, z + 1)] - gamma * conv[Index(x, y, z)])) /
-						(1.0 + dt * (g[Index(x + 1, y, z)] + g[Index(x - 1, y, z)] + g[Index(x, y + 1, z)] + g[Index(x, y - 1, z)] + g[Index(x, y, z + 1)] + g[Index(x, y, z - 1)]));
-					if(fabs(oldVal - newVal) < epsilon)
-					{
+						u[Index(x, y, z + 1)] * g[Index(x, y, z + 1)] -
+                            gamma * conv[Index(x, y, z)])) / (1.0 + dt *
+                            (g[Index(x + 1, y, z)] +
+                             g[Index(x - 1, y, z)] +
+                             g[Index(x, y + 1, z)] +
+                             g[Index(x, y - 1, z)] +
+                             g[Index(x, y, z + 1)] +
+                             g[Index(x, y, z - 1)]));
+
+					if (fabs(oldVal - newVal) < epsilon)
 						converged++;
-					}
+
 					u[Index(x, y, z)] = newVal;
 				}
 			}
 		}
-		if(converged > lastConverged)
-		{
+
+		if (converged > lastConverged) {
 			printf("%d pixels have converged on iteration %d\n", converged, iteration);
 			lastConverged = converged;
 		}
 	}
 }
-
