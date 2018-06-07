@@ -1,4 +1,4 @@
-//Sequential version, treat this as your golden copy
+/*Sequential version, treat this as your golden copy*/
 #include <math.h>
 #include <stdio.h>
 #include <assert.h>

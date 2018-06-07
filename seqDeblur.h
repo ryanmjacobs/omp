@@ -1,7 +1,7 @@
 #ifndef SEQ_DEBLUR_H
 #define SEQ_DEBLUR_H
 
-//Sequential version, treat this as your golden copy
+/*Sequential version, treat this as your golden copy*/
 
 void SEQ_Initialize(int xM, int yM, int zM);
 void SEQ_Finish();

@@ -1,7 +1,7 @@
 #ifndef OMP_DEBLUR_H
 #define OMP_DEBLUR_H
 
-//OpenMP version INTERFACE, do not change anything here.  You must adhere to this interface.
+/*OpenMP version INTERFACE, do not change anything here.  You must adhere to this interface. */
 
 void OMP_Initialize(int xM, int yM, int zM);
 void OMP_Finish();

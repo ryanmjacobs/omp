@@ -6,6 +6,8 @@
 #include "ompDeblur.h"
 #include "seqDeblur.h"
 
+#include <sys/time.h>
+
 int CompareResults(double* a, double* b, int xM, int yM, int zM)
 {
 	int i;
