@@ -118,7 +118,7 @@ void OMP_Deblur(double* u, const double* f, int maxIterations, double dt, double
 
     for (iteration = 0; iteration < maxIterations && converged != fullyConverged; iteration++)
     {
-        #pragma omp parallel for collapse(3)
+        #pragma omp parallel for collapse(3) private(x,y,z)
         for(x = 1; x < xMax - 1; x++) {
             for(y = 1; y < yMax - 1; y++)
                 for(z = 1; z < zMax - 1; z++)
@@ -134,7 +134,7 @@ void OMP_Deblur(double* u, const double* f, int maxIterations, double dt, double
         memcpy(conv, u, sizeof(double) * xMax * yMax * zMax);
         OMP_GaussianBlur(conv, Ksigma, 3);
 
-        #pragma omp parallel for collapse(3)
+        #pragma omp parallel for collapse(3) private(x,y,z)
         for(x = 0; x < xMax; x++) {
             for(y = 0; y < yMax; y++) {
                 for(z = 0; z < zMax; z++) {
