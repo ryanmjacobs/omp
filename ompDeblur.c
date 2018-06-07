@@ -50,56 +50,58 @@ void OMP_GaussianBlur(double *u, double Ksigma, int stepCount)
 {
     double lambda = (Ksigma * Ksigma) / (double)(2 * stepCount);
     double nu = (1.0 + 2.0*lambda - sqrt(1.0 + 4.0*lambda))/(2.0*lambda);
-    int x, y, z, step;
     double boundryScale = 1.0 / (1.0 - nu);
     double postScale = pow(nu / lambda, (double)(3 * stepCount));
 
-  //#pragma omp parallel
+    #pragma omp parallel
     {
-      //#pragma omp for private(step)
-        for (step = 0; step < stepCount; step++)
+        #pragma omp for
+        for (int step = 0; step < stepCount; step++)
         {
-            for (y = 0; y < yMax; y++) {
-                for (z = 0; z < zMax; z++) {
+          //#pragma omp for collapse(2)
+            for (int y = 0; y < yMax; y++) {
+                for (int z = 0; z < zMax; z++) {
                     u[Index(0, y, z)] *= boundryScale;
-                    for (x = 1; x < xMax; x++)
+                    for (int x = 1; x < xMax; x++)
                         u[Index(x, y, z)] += u[Index(x - 1, y, z)] * nu;
 
                     u[Index(0, y, z)] *= boundryScale;
-                    for (x = xMax - 2; x >= 0; x--)
+                    for (int x = xMax - 2; x >= 0; x--)
                         u[Index(x, y, z)] += u[Index(x + 1, y, z)] * nu;
                 }
             }
 
-            for (x = 0; x < xMax; x++) {
-                for (z = 0; z < zMax; z++) {
+          //#pragma omp for collapse(2)
+            for (int x = 0; x < xMax; x++) {
+                for (int z = 0; z < zMax; z++) {
                     u[Index(x, 0, z)] *= boundryScale;
-                    for (y = 1; y < yMax; y++)
+                    for (int y = 1; y < yMax; y++)
                         u[Index(x, y, z)] += u[Index(x, y - 1, z)] * nu;
 
                     u[Index(x, yMax - 1, z)] *= boundryScale;
-                    for (y = yMax - 2; y >= 0; y--)
+                    for (int y = yMax - 2; y >= 0; y--)
                         u[Index(x, y, z)] += u[Index(x, y + 1, z)] * nu;
                 }
             }
 
-            for (x = 0; x < xMax; x++) {
-                for (y = 0; y < yMax; y++) {
+          //#pragma omp for collapse(2)
+            for (int x = 0; x < xMax; x++) {
+                for (int y = 0; y < yMax; y++) {
                     u[Index(x, y, 0)] *= boundryScale;
-                    for (z = 1; z < zMax; z++)
+                    for (int z = 1; z < zMax; z++)
                         u[Index(x, y, z)] = u[Index(x, y, z - 1)] * nu;
 
                     u[Index(x, y, zMax - 1)] *= boundryScale;
-                    for (z = zMax - 2; z >= 0; z--)
+                    for (int z = zMax - 2; z >= 0; z--)
                         u[Index(x, y, z)] += u[Index(x, y, z + 1)] * nu;
                 }
             }
         }
     }
 
-    for (x = 0; x < xMax; x++)
-        for (y = 0; y < yMax; y++)
-            for (z = 0; z < zMax; z++)
+    for (int x = 0; x < xMax; x++)
+        for (int y = 0; y < yMax; y++)
+            for (int z = 0; z < zMax; z++)
                 u[Index(x, y, z)] *= postScale;
 }
 
