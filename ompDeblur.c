@@ -54,7 +54,7 @@ void OMP_GaussianBlur(double *u, double Ksigma, int stepCount)
 
     int x, y, z, step;
 
-    #pragma omp parallel private(x,y,z,step)
+    #pragma omp parallel private(x,y,z,step) num_threads(4)
     for (step = 0; step < stepCount; step++) {
         #pragma omp for collapse(2)
         for (y = 0; y < yMax; y++) {
