@@ -25,16 +25,16 @@ f.file:
 	gzip -kfd f.file.gz
 
 $(EXEC_FILE): $(OBJ_FILE) main.o seqDeblur.o
-	gcc -o $(EXEC_FILE) -fopenmp $(OBJ_FILE) main.o seqDeblur.o -lm $(GPROFFLAG) 
+	clang -o $(EXEC_FILE) -fopenmp $(OBJ_FILE) main.o seqDeblur.o -lm $(GPROFFLAG) 
 
 $(OBJ_FILE): $(SRCFILE) $(HEADERS)
-	gcc $(CFLAGS) -c $(SRCFILE)
+	clang $(CFLAGS) -c $(SRCFILE)
 
 main.o: main.c $(HEADERS)
-	gcc $(CFLAGS) -c main.c
+	clang $(CFLAGS) -c main.c
 
 seqDeblur.o: seqDeblur.c $(HEADERS)
-	gcc $(CFLAGS) -c seqDeblur.c
+	clang $(CFLAGS) -c seqDeblur.c
 
 clean:
 	rm -f {u,f}.file
