@@ -55,26 +55,17 @@ void OMP_GaussianBlur(double *u, double Ksigma, int stepCount)
 
 	for(step = 0; step < stepCount; step++) {
         #pragma omp parallel for collapse(2)
-        for(z = 0; z < zMax; z++)
-            for(y = 0; y < yMax; y++)
+        for(z = 0; z < zMax; z++) {
+			for(y = 0; y < yMax; y++) {
 				u[Index(0, y, z)] *= boundryScale;
-
-      //#pragma omp parallel for collapse(3)
-        for(z = 0; z < zMax; z++)
-			for(y = 0; y < yMax; y++)
                 for(x = 1; x < xMax; x++)
 					u[Index(x, y, z)] += u[Index(x - 1, y, z)] * nu;
 
-        #pragma omp parallel for collapse(2)
-        for(z = 0; z < zMax; z++)
-            for(y = 0; y < yMax; y++)
 				u[Index(0, y, z)] *= boundryScale;
-
-      //#pragma omp parallel for collapse(3)
-        for(z = 0; z < zMax; z++)
-			for(y = 0; y < yMax; y++)
                 for(x = xMax - 2; x >= 0; x--)
 					u[Index(x, y, z)] += u[Index(x + 1, y, z)] * nu;
+            }
+        }
 
         #pragma omp parallel for collapse(2)
         for(z = 0; z < zMax; z++)
