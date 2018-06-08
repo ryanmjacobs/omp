@@ -131,6 +131,7 @@ void OMP_Deblur(double* u, const double* f, int maxIterations, double dt, double
                         SQR(u[Index(x, y, z)] - u[Index(x, y, z - 1)]));
         }
 
+        /*
         memcpy(conv, u, sizeof(double) * xMax * yMax * zMax);
         OMP_GaussianBlur(conv, Ksigma, 3);
 
@@ -147,6 +148,7 @@ void OMP_Deblur(double* u, const double* f, int maxIterations, double dt, double
         }
 
         OMP_GaussianBlur(conv, Ksigma, 3);
+        */
         converged = 0;
 
         for(x = 1; x < xMax - 1; x++) {
