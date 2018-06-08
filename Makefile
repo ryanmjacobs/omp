@@ -10,7 +10,7 @@ endif
 CFLAGS += -fopenmp -I.#-std=c89
 #CFLAGS += -I.
 ifndef $(SRCFILE)
-SRCFILE=ompDeblur_nathan.c	
+SRCFILE=ompDeblur.c	
 endif
 
 EXEC_FILE=deblurTest
