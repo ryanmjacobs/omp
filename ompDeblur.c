@@ -119,9 +119,9 @@ void OMP_Deblur(double* u, const double* f, int maxIterations, double dt, double
     for (iteration = 0; iteration < maxIterations && converged != fullyConverged; iteration++)
     {
         #pragma omp parallel for collapse(3) private(x,y,z)
-        for(x = 1; x < xMax - 1; x++) {
+        for(z = 1; z < zMax - 1; z++) {
             for(y = 1; y < yMax - 1; y++)
-                for(z = 1; z < zMax - 1; z++)
+                for(x = 1; x < xMax - 1; x++)
                     g[Index(x, y, z)] = 1.0 / sqrt(epsilon + 
                         SQR(u[Index(x, y, z)] - u[Index(x + 1, y, z)]) + 
                         SQR(u[Index(x, y, z)] - u[Index(x - 1, y, z)]) + 
@@ -151,9 +151,9 @@ void OMP_Deblur(double* u, const double* f, int maxIterations, double dt, double
         */
         converged = 0;
 
-        for(x = 1; x < xMax - 1; x++) {
+        for(z = 1; z < zMax - 1; z++) {
             for(y = 1; y < yMax - 1; y++) {
-                for(z = 1; z < zMax - 1; z++) {
+                for(x = 1; x < xMax - 1; x++) {
                     double oldVal = u[Index(x, y, z)];
                     double newVal = (u[Index(x, y, z)] + dt * ( 
                         u[Index(x - 1, y, z)] * g[Index(x - 1, y, z)] + 
