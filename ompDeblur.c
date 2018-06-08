@@ -54,7 +54,7 @@ void OMP_GaussianBlur(double *u, double Ksigma, int stepCount)
 	double postScale = pow(nu / lambda, (double)(3 * stepCount));
 
 	for(step = 0; step < stepCount; step++) {
-        #pragma omp parallel for collapse(2)
+        #pragma omp parallel for
         for(z = 0; z < zMax; z++) {
 			for(y = 0; y < yMax; y++) {
 				u[Index(0, y, z)] *= boundryScale;
