@@ -57,15 +57,15 @@ void OMP_GaussianBlur(double *u, double Ksigma, int stepCount)
 
 	for(step = 0; step < stepCount; step++)
     {
-        #pragma omp parallel for private(index)
+      //#pragma omp parallel for private(index)
         for (index = 0; index < zmymxm-xMax; index+=xMax)
             u[index] *= boundryScale;
 
-        #pragma omp parallel for private(index)
+      //#pragma omp parallel for private(index)
         for (index = 1; index < zmymxm; index++)
             u[index] += u[index-1] * nu;
 
-        #pragma omp parallel for private(index)
+      //#pragma omp parallel for private(index)
         for (index = 0; index < zmymxm-xMax; index+=xMax)
             u[index] *= boundryScale;
 
