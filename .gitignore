@@ -1,6 +1,3 @@
 *.o
 deblurTest
 gmon.out
-
-u.file
-f.file

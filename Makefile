@@ -18,12 +18,6 @@ OBJ_FILE=$(patsubst %.c,%.o,$(SRCFILE))
 
 all: u.file f.file $(EXEC_FILE)
 
-u.file:
-	gzip -kfd u.file.gz
-
-f.file:
-	gzip -kfd f.file.gz
-
 $(EXEC_FILE): $(OBJ_FILE) main.o seqDeblur.o
 	gcc -o $(EXEC_FILE) -fopenmp $(OBJ_FILE) main.o seqDeblur.o -lm $(GPROFFLAG) 
 
