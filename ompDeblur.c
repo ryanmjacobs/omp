@@ -120,14 +120,17 @@ void OMP_Deblur(double* u, const double* f, int maxIterations, double dt, double
     {
         for(z = 1; z < zMax - 1; z++) {
             for(y = 1; y < yMax - 1; y++)
-                for(x = 1; x < xMax - 1; x++)
+                for(x = 1; x < xMax - 1; x++) {
+                    int idx = Index(x,y,z);
+
                     g[Index(x, y, z)] = 1.0 / sqrt(epsilon + 
-                        SQR(u[Index(x, y, z)] - u[Index(x + 1, y, z)]) + 
-                        SQR(u[Index(x, y, z)] - u[Index(x - 1, y, z)]) + 
-                        SQR(u[Index(x, y, z)] - u[Index(x, y + 1, z)]) + 
-                        SQR(u[Index(x, y, z)] - u[Index(x, y - 1, z)]) + 
-                        SQR(u[Index(x, y, z)] - u[Index(x, y, z + 1)]) + 
-                        SQR(u[Index(x, y, z)] - u[Index(x, y, z - 1)]));
+                        SQR(u[idx] - u[idx+1]) + 
+                        SQR(u[idx] - u[idx-1]) + 
+                        SQR(u[idx] - u[idx+xMax]) + 
+                        SQR(u[idx] - u[idx-xMax]) + 
+                        SQR(u[idx] - u[idx+xMax*yMax]) + 
+                        SQR(u[idx] - u[idx-xMax*yMax]));
+                }
         }
 
         /*
