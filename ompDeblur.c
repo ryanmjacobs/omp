@@ -1,8 +1,9 @@
-/**
- * Name : Ryan Jacobs
- * UCLA ID: 605019096
- * Email id: ryanjacobs@ucla.edu
- */
+/* Enter your details below
+* Name: Ryan Jacobs
+* UCLA ID: 605019096
+* Email id: ryanjacobs@ucla.edu
+* Input: Old files
+*/
 
 #include <math.h>
 #include <stdio.h>
@@ -124,12 +125,12 @@ void OMP_Deblur(double* u, const double* f, int maxIterations, double dt, double
                 for(x = 1; x < xMax - 1; x++) {
                     int idx = Index(x,y,z);
 
-                    g[Index(x, y, z)] = 1.0 / sqrt(epsilon + 
-                        SQR(u[idx] - u[idx+1]) + 
-                        SQR(u[idx] - u[idx-1]) + 
-                        SQR(u[idx] - u[idx+xMax]) + 
-                        SQR(u[idx] - u[idx-xMax]) + 
-                        SQR(u[idx] - u[idx+xMax*yMax]) + 
+                    g[Index(x, y, z)] = 1.0 / sqrt(epsilon +
+                        SQR(u[idx] - u[idx+1]) +
+                        SQR(u[idx] - u[idx-1]) +
+                        SQR(u[idx] - u[idx+xMax]) +
+                        SQR(u[idx] - u[idx-xMax]) +
+                        SQR(u[idx] - u[idx+xMax*yMax]) +
                         SQR(u[idx] - u[idx-xMax*yMax]));
                 }
         }
@@ -158,12 +159,12 @@ void OMP_Deblur(double* u, const double* f, int maxIterations, double dt, double
             for(y = 1; y < yMax - 1; y++) {
                 for(x = 1; x < xMax - 1; x++) {
                     double oldVal = u[Index(x, y, z)];
-                    double newVal = (u[Index(x, y, z)] + dt * ( 
-                        u[Index(x - 1, y, z)] * g[Index(x - 1, y, z)] + 
-                        u[Index(x + 1, y, z)] * g[Index(x + 1, y, z)] + 
-                        u[Index(x, y - 1, z)] * g[Index(x, y - 1, z)] + 
-                        u[Index(x, y + 1, z)] * g[Index(x, y + 1, z)] + 
-                        u[Index(x, y, z - 1)] * g[Index(x, y, z - 1)] + 
+                    double newVal = (u[Index(x, y, z)] + dt * (
+                        u[Index(x - 1, y, z)] * g[Index(x - 1, y, z)] +
+                        u[Index(x + 1, y, z)] * g[Index(x + 1, y, z)] +
+                        u[Index(x, y - 1, z)] * g[Index(x, y - 1, z)] +
+                        u[Index(x, y + 1, z)] * g[Index(x, y + 1, z)] +
+                        u[Index(x, y, z - 1)] * g[Index(x, y, z - 1)] +
                         u[Index(x, y, z + 1)] * g[Index(x, y, z + 1)] -
                             gamma * conv[Index(x, y, z)])) / (1.0 + dt *
                             (g[Index(x + 1, y, z)] +
