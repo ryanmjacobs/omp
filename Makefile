@@ -31,5 +31,4 @@ seqDeblur.o: seqDeblur.c $(HEADERS)
 	gcc $(CFLAGS) -c seqDeblur.c
 
 clean:
-	rm -f {u,f}.file
 	rm -f $(EXEC_FILE) $(OBJ_FILE) main.o seqDeblur.o gmon.out
