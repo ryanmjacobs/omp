@@ -16,7 +16,7 @@ endif
 EXEC_FILE=deblurTest
 OBJ_FILE=$(patsubst %.c,%.o,$(SRCFILE))
 
-all: u.file f.file $(EXEC_FILE)
+all: $(EXEC_FILE)
 
 $(EXEC_FILE): $(OBJ_FILE) main.o seqDeblur.o
 	gcc -o $(EXEC_FILE) -fopenmp $(OBJ_FILE) main.o seqDeblur.o -lm $(GPROFFLAG) 
